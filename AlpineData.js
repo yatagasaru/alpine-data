@@ -4,19 +4,25 @@ class AlpineData {
         this.isType('string', xTrigger, 'on parameter 1')
         this.isType('string', functionName, 'on parameter 2')
         this.xTrigger = xTrigger
-        
-        if(functionName !== ''){
-            this.functionString = `x-on:click="${functionName}()"`
-        }
-        else{
-            this.functionString = ''
-        }
-        
-        $(`[x-trigger="${this.xTrigger}"]`).append(`<div class="x-trigger-click" ${this.functionString}></div>`)
+  
+        const xTriggerEl = document.querySelectorAll(`[x-trigger="${this.xTrigger}"]`)
+        xTriggerEl.forEach(el => {
+            const div = document.createElement('div')
+            div.className = 'x-trigger-click'
+                  
+            if(functionName !== ''){
+                div.setAttribute('x-on:click', functionName)
+            }
+            
+            el.appendChild(div)
+        })
     }
     set(data){
-        $(`[x-trigger="${this.xTrigger}"]`).attr('data-init', JSON.stringify(data))
-        $(`[x-trigger="${this.xTrigger}"] .x-trigger-click`).click()
+        const xTriggerElData = document.querySelectorAll(`[x-trigger="${this.xTrigger}"]`)
+        xTriggerElData.forEach(el => el.setAttribute('data-init', JSON.stringify(data)))
+
+        const xTriggerElClick = document.querySelectorAll(`[x-trigger="${this.xTrigger}"] .x-trigger-click`)
+        xTriggerElClick.forEach(el => el.click())
     }
     get(){
         return JSON.parse(document.querySelector(`[x-trigger="${this.xTrigger}"]`).attributes["data-init"].value)
